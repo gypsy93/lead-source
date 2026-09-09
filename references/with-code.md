@@ -97,9 +97,15 @@ update links set clicks = clicks + 1, last_click_at = now() where slug = $1;
 **넉넉하게 거른다.** 사람을 기계로 잘못 보면 클릭 하나를 잃지만, **기계를 사람으로 세면 숫자 전체를 못 믿게 된다.**
 
 ```ts
-const BOT = /kakao|facebookexternalhit|twitterbot|slackbot|linkedinbot|telegrambot|
-whatsapp|discordbot|embedly|applebot|googlebot|bingbot|yeti|daum|
-bot\b|crawler|spider|preview|scrap|curl|wget|python-requests|node-fetch|headless/i
+// 정규식은 한 줄이어야 한다. 줄을 나누면 그대로 복사했을 때 문법 오류가 난다.
+// 보기 좋게 나누려면 조각을 이어 붙인다.
+const BOT = new RegExp([
+  'kakao', 'facebookexternalhit', 'twitterbot', 'slackbot', 'linkedinbot',
+  'telegrambot', 'whatsapp', 'discordbot', 'embedly', 'applebot',
+  'googlebot', 'bingbot', 'yeti', 'daum',
+  'bot\\b', 'crawler', 'spider', 'preview', 'scrap',
+  'curl', 'wget', 'python-requests', 'node-fetch', 'headless',
+].join('|'), 'i')
 
 function isBot(ua) {
   if (!ua || ua.trim().length < 10) return true   // 브라우저는 늘 보낸다
